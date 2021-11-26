@@ -1,0 +1,102 @@
+version: "3"
+
+services:
+
+  core:
+
+    build:
+
+      context: "./"
+      dockerfile: "Dockerfile"
+      args:
+
+        TIMEZONE: ${TIMEZONE}
+        NAME: ${NAME}
+        MODE: ${NODE_ENV}
+        HOST: ${HOST}
+        PORT: ${PORT}
+
+    image: "${NAME}:1.0.0"
+
+    deploy:
+
+      mode: replicated
+      replicas: ${SCALE_LENGTH}
+
+    depends_on:
+
+      - memory
+      - database
+
+    links:
+
+      - "memory:${NAME}_memory"
+      - "database:${NAME}_database"
+
+    # entrypoint: [] #
+    # command: ["tail", "-f", "/dev/null"] #
+
+    #########################################################################################################
+
+    ports:
+
+      - ${PORT}
+
+    volumes:
+
+      - "./private/:/var/www/${NAME}/private/"
+      - "./public/:/var/www/${NAME}/public/"
+
+    #########################################################################################################
+
+  memory:
+
+    image: redis:5.0.10
+
+    expose:
+
+      - "6379"
+
+    environment:
+
+      TZ: ${TIMEZONE}
+
+    command: redis-server --requirepass ${MEMORY_PASSWORD}
+
+  database:
+
+    image: mariadb:10.5.8
+
+    expose:
+
+      - "3306"
+
+    environment:
+
+      TZ: ${TIMEZONE}
+
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+
+  phpmyadmin:
+
+    image: phpmyadmin/phpmyadmin:4.8.3
+
+    ports:
+
+      - "80"
+
+    environment:
+
+      TZ: ${TIMEZONE}
+
+      PMA_HOST: database
+
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+
+    depends_on:
+
+      - database

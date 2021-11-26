@@ -1,0 +1,7 @@
+/node_modules/
+/.idea/
+/docker/
+/.vagrant/
+
+.*.swp
+.env

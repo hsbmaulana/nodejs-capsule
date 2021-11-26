@@ -1,0 +1,36 @@
+{
+    "engines": { "syntax": "es6", "node": ">=15.12", "npm": ">=7.6" },
+    "dependencies": {
+
+        "pm2": "^4.5",
+
+        "express": "^4.17",
+        "socket.io": "^4.0",
+
+        "helmet": "^4.4",
+        "compression": "^1.7",
+        "body-parser": "^1.19",
+        "multer": "^1.4",
+
+        "dotenv": "^8.2",
+        "cors": "^2.8",
+        "morgan": "^1.10",
+        "lodash": "^4.17",
+        "uuid": "^8.3"
+    },
+
+    "devDependencies": {
+
+        "mocha": "^8.3"
+    },
+
+    "main": "index.js",
+
+    "scripts": {
+
+        "serve:production": "pm2-runtime server.config.js",
+        "serve:development": "pm2-dev server.config.js"
+    },
+
+    "engineStrict": true
+}
